@@ -5,6 +5,7 @@ import tweetsRouter from './router/tweets.js'
 
 const app = express();
 
+//미들웨어 등록
 app.use(express.json());
 app.use(cors());
 app.use(morgan('tiny'));
