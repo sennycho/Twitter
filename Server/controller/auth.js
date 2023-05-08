@@ -15,8 +15,8 @@ const bcryptSaltRounds = 10;
 export async function signup(req, res){
 
     const {username, password, name, email, url } = req.body;
-    const found = await userRepository.findByUsername(username);
-    if (found) {
+    const sign_id = await userRepository.findByUsername(username);
+    if (sign_id) {
         return res.status(409).json({ message: `${username}은 이미 가입되어있습니다`});
     }
     const hashed = await bcrypt.hash(password, bcryptSaltRounds);
@@ -39,7 +39,7 @@ export async function signup(req, res){
 export async function login(req, res){
     const {username, password} =req.body;
     const user = await userRepository.findByUsername(username);
-    if(!user){
+    if(!user){// 로그인이므로, user객체가 없으면 오류가 발생
         return res.status(401).json({message: '요청한 아이디가 존재하지 않습니다'});
     }
     const isValidpassword = await bcrypt.compare(password, user.password);
