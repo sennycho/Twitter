@@ -1,0 +1,7 @@
+npm i dotenv
+
+config.js를 만듦
+import dotenc 
+
+.env 파일 만듦
+ctrl shift f 누르고 secret검색해서 시크릿키 복사해와서 .env 파일에복붙
