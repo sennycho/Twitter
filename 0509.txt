@@ -5,3 +5,14 @@ import dotenc
 
 .env 파일 만듦
 ctrl shift f 누르고 secret검색해서 시크릿키 복사해와서 .env 파일에복붙
+
+
+
+Http
+1. 클라이언트에서 서버쪽으로 요청을 해야 응답을 받을 수 있음
+2. 클라이언트에서 데이터를 받은 후 연결을 끊음
+
+
+index.js 들어가여
+
+npm i soket.io
