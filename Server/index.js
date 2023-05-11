@@ -4,9 +4,10 @@ import morgan from 'morgan';
 import tweetsRouter from './router/tweets.js';
 import authRouter from './router/auth.js';
 import { config } from './config.js';
-// import { Server } from "socket.io";
 import { initSocket } from "./connection/socket.js";
+import { sequelize } from "./db/database.js";
 // import { db } from "./db/database.js";
+
 
 
 const app = express();
@@ -24,29 +25,16 @@ app.use((req, res, next) => {
     res.sendStatus(404);
 });
 
-app.use((error, req, res, next) =>{
+app.use((error, req, res, next) => {
     console.log(error);
     res.sendStatus(500)
 });
 
 // db.getConnection().then((connection) => console.log(connection));
 
-const server = app.listen(config.host.port);   //웹으로도 사용
-initSocket(server);
-
-// const socketIO = new Server(server, {
-//     cors: {
-//         origin: "*"
-//     }
-// });
-
-// socketIO.on('connection', () => {
-//     console.log('클라이언트 연결 성공!');
-//     socketIO.emit('dwitter', 'Hello💖');   //이 소켓에 접속한 클라이언트에게 이벤트를 발생시킴
-// })
-
-// setInterval(() => {
-//     socketIO.emit('dwitter', 'Hello💖💖💖💖💖');
-// }, 1000)
-
+sequelize.sync().then(() => {
+    // console.log(client);
+    const server = app.listen(config.host.port);   
+    initSocket(server);
+})
 

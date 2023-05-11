@@ -1,11 +1,11 @@
-import mysql from 'mysql2';
 import { config } from '../config.js';
+import SQ from 'sequelize';
 
-const pool = mysql.createPool({
-    host: config.db.host,
-    user: config.db.user,
-    database: config.db.db,
-    password: config.db.pw
+const { host, user, database, password } = config.db
+
+export const sequelize = new SQ.Sequelize(database, user, password, {
+    host,
+    dialect: 'mysql',
+    logging: false,    // 로그로 남길지
+    timezone: "+09:00"
 });
-
-export const db = pool.promise();   //프로미스도 비동기로 넘김
