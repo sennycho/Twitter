@@ -1,11 +1,18 @@
+import MongoDb from 'mongodb';
 import { config } from '../config.js';
-import SQ from 'sequelize';
 
-const { host, user, database, password } = config.db
+let db;
+export async function connectDB(){
+    return MongoDb.MongoClient.connect(config.db.host)
+    .then((client) => {
+        db = client.db();   //db를 전역으로 
+    });
+}
 
-export const sequelize = new SQ.Sequelize(database, user, password, {
-    host,
-    dialect: 'mysql',
-    logging: false,    // 로그로 남길지
-    timezone: "+09:00"
-});
+export function getUsers(){
+    return db.collection('users');
+}
+
+export function getTweets(){
+    return db.collection('tweets');
+}

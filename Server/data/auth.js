@@ -1,59 +1,31 @@
-// abcd1234: 
-import SQ from 'sequelize';
-import { sequelize } from "../db/database.js";
-
-const DataTypes = SQ.DataTypes;
-
-export const User = sequelize.define(
-    'user',
-    {
-        id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
-            allowNull: false,
-            primaryKey: true
-        },
-        username: {
-            type: DataTypes.STRING(45),
-            allowNull: false
-        },
-        password: {
-            type: DataTypes.STRING(128),
-            allowNull: false
-        },
-        name: {
-            type: DataTypes.STRING(45),
-            allowNull: false
-        },
-        email: {
-            type: DataTypes.STRING(128),
-            allowNull: false
-        },
-        url: {
-            type: DataTypes.TEXT
-        },
-        regdate: {
-            type: DataTypes.DATE(),
-            defaultValue: DataTypes.NOW
-        }
-    },
-    { timestamps: false }
-)
-
+import { getUsers } from "../db/database.js";
+import MongoDb from 'mongodb';
+// 데이터가 추가될때마다 객체가 저장되듯 저장됨
+const ObjectID = MongoDb.ObjectId;
 
 
 export async function findByUsername(username) {
-    return User.findOne({ where: { username } });
+    return getUsers().find({username})
+    .next()
+    .then(mapOptionalUser);
 }
 
 export async function createUser(user) {
-    return User.create(user).then((data) => data.dataValues.id);
-
-
-    // return db.execute('insert into users (username, password, name, email, url) values (?, ?, ?, ?, ?)', [username, password, name, email, url]).then((result) => result[0].insertId);
+    return getUsers().insertOne(user)
+    .then((result) => {
+        console.log(result);
+        // result.ops[0]._id.toString();
+    });
 }
 
+
 export async function findById(id) {
-    return User.findByPk(id);
-    // pk => primary key
+    return getUsers()
+    .find({ _id: new ObjectID(id) })
+    .next()
+    .then(mapOptionalUser);
+}
+
+function mapOptionalUser(user){
+    return user ? { ...user, id: user._id.toString() } : user;
 }
