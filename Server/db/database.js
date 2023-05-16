@@ -1,12 +1,17 @@
-import MongoDb from 'mongodb';
+import Mongoose from 'mongoose';
 import { config } from '../config.js';
 
 let db;
 export async function connectDB(){
-    return MongoDb.MongoClient.connect(config.db.host)
-    .then((client) => {
-        db = client.db();   //db를 전역으로 
+    return Mongoose.connect(config.db.host);
+}
+
+export function useVirtualId(schema){
+    schema.virtual('id').get(function() {
+        return this._id.toString();
     });
+    schema.set('toJSON', { virtuals: true });
+    schema.set('toObject', { virtuals: true });
 }
 
 export function getUsers(){
